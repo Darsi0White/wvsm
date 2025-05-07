@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мальчики против Девочек</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .score {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      padding: 10px;
+      background-color: #f0f0f0;
+    }
+    .main {
+      flex: 1;
+      display: flex;
+    }
+    .team {
+      flex: 1;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.2rem;
+      position: relative;
+    }
+    .team.girls {
+      background-color: #ff69b4;
+    }
+    .team.boys {
+      background-color: #1e90ff;
+    }
+    .player {
+      margin: 10px 0;
+    }
+    .center-image {
+      position: absolute;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 60%;
+      max-height: 70%;
+      z-index: 1;
+    }
+    .controls {
+      position: absolute;
+      bottom: 20px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      z-index: 2;
+      flex-wrap: wrap;
+    }
+    .controls button, .controls input[type="file"] {
+      padding: 10px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="score" id="score">0 : 0</div>
+  <div class="main">
+    <div class="team girls">
+      <div class="player" id="girl1">Девочка 1</div>
+      <div class="player" id="girl2">Девочка 2</div>
+    </div>
+    <div class="team boys">
+      <div class="player" id="boy1">Мальчик 1</div>
+      <div class="player" id="boy2">Мальчик 2</div>
+    </div>
+  </div>
+  <img src="" alt="" id="questionImage" class="center-image" />
+  <div class="controls">
+    <button onclick="scoreGirls++; updateScore();">+1 Девочки</button>
+    <button onclick="scoreBoys++; updateScore();">+1 Мальчики</button>
+    <input type="file" accept="image/*" onchange="loadImage(event)" />
+    <button onclick="nextImage()">Следующее изображение</button>
+  </div>
+
+  <script>
+    const scoreEl = document.getElementById('score');
+    let scoreGirls = 0;
+    let scoreBoys = 0;
+    let images = [];
+    let currentIndex = -1;
+
+    function updateScore() {
+      scoreEl.textContent = `${scoreGirls} : ${scoreBoys}`;
+    }
+
+    function setImage(src) {
+      document.getElementById('questionImage').src = src;
+    }
+
+    function loadImage(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          images.push(e.target.result);
+          if (images.length === 1) {
+            currentIndex = 0;
+            setImage(images[0]);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function nextImage() {
+      if (images.length === 0) return;
+      currentIndex = (currentIndex + 1) % images.length;
+      setImage(images[currentIndex]);
+    }
+  </script>
+</body>
+</html>
